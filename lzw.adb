@@ -5,6 +5,8 @@ with Ada.Strings.Unbounded;
 
 package body LZW is
 
+   use Ada.Strings.Unbounded; -- Makes "=" visible for Vectors instantiation
+
    -- Map: String -> Code (used for compression)
    package String_To_Code_Maps is new Ada.Containers.Indefinite_Hashed_Maps
      (Key_Type        => String,
@@ -15,7 +17,7 @@ package body LZW is
    -- Vector: Code -> String (used for decompression)
    package Code_To_String_Vectors is new Ada.Containers.Vectors
      (Index_Type   => Code_Type,
-      Element_Type => Ada.Strings.Unbounded.Unbounded_String);
+      Element_Type => Unbounded_String);
 
    -- Helper: Initialize dictionary with base alphabet (0 to 255)
    procedure Init_Compress_Dict (Map : in out String_To_Code_Maps.Map) is
@@ -28,7 +30,6 @@ package body LZW is
    end Init_Compress_Dict;
 
    procedure Init_Decompress_Dict (Vec : in out Code_To_String_Vectors.Vector) is
-      use Ada.Strings.Unbounded;
    begin
       Vec.Clear;
       for I in 0 .. 255 loop
@@ -44,13 +45,12 @@ package body LZW is
       Map         : String_To_Code_Maps.Map;
       Output      : Code_Array (1 .. Input'Length * 2); -- Safe upper bound for allocation
       Out_Index   : Natural := 0;
-      W           : Ada.Strings.Unbounded.Unbounded_String;
-      WK          : Ada.Strings.Unbounded.Unbounded_String;
+      W           : Unbounded_String;
+      WK          : Unbounded_String;
       K           : Character;
       Next_Code   : Code_Type := 256;
       Max_Size    : constant Code_Type := 2 ** Max_Bits;
       
-      use Ada.Strings.Unbounded;
    begin
       if Max_Bits < 9 then
          raise LZW_Error with "Max_Bits must be at least 9.";
@@ -98,15 +98,14 @@ package body LZW is
                         Max_Bits : Positive := 12) return String is
       
       Vec          : Code_To_String_Vectors.Vector;
-      Result       : Ada.Strings.Unbounded.Unbounded_String;
+      Result       : Unbounded_String;
       Old_Code     : Code_Type;
       New_Code     : Code_Type;
-      S            : Ada.Strings.Unbounded.Unbounded_String;
+      S            : Unbounded_String;
       Next_Code    : Code_Type := 256;
       Max_Size     : constant Code_Type := 2 ** Max_Bits;
       Just_Cleared : Boolean := False;
       
-      use Ada.Strings.Unbounded;
    begin
       if Max_Bits < 9 then
          raise LZW_Error with "Max_Bits must be at least 9.";
