@@ -1,6 +1,3 @@
-with Ada.Strings.Unbounded;
-with Ada.Containers;
-
 package LZW is
    pragma Preelaborate;
 
