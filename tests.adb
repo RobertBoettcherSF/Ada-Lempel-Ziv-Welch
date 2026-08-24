@@ -7,10 +7,6 @@ procedure Tests is
    C_Single     : constant String := "A";
    C_Basic      : constant String := "TOBEORNOTTOBEORTOBEORNOT";
    C_Repeated   : constant String := "AAAAAAAAAAAAAAA";
-   
-   Output_Codes : Code_Array(1..100);
-   Output_Len   : Natural;
-   Decoded      : String(1..100);
 begin
    Put_Line ("Starting LZW Validation Suite...");
    Put_Line ("--------------------------------");
@@ -115,8 +111,9 @@ begin
    Put_Line ("  8.1 Assert invalid start code throws LZW_Error");
    begin
       declare
-         Bad_Code : Code_Array := (1 => 258); -- First code must be < 256
-         Str : String := Decompress(Bad_Code);
+         Bad_Code : constant Code_Array := (1 => 258); -- First code must be < 256
+         Str      : constant String := Decompress(Bad_Code);
+         pragma Unreferenced (Str);
       begin
          Assert (False, "Failed: Should have thrown LZW_Error on start code");
       end;
@@ -129,8 +126,9 @@ begin
    begin
       declare
          -- Code 260 doesn't exist yet
-         Bad_Seq : Code_Array := (1 => 65, 2 => 260); 
-         Str : String := Decompress(Bad_Seq);
+         Bad_Seq : constant Code_Array := (1 => 65, 2 => 260); 
+         Str     : constant String := Decompress(Bad_Seq);
+         pragma Unreferenced (Str);
       begin
          Assert (False, "Failed: Should have thrown LZW_Error on jump code");
       end;
@@ -144,7 +142,8 @@ begin
    Put_Line ("  9.1 Assert Max_Bits < 9 throws LZW_Error");
    begin
       declare
-         Res : Code_Array := Compress ("Test", Freeze, 8);
+         Res : constant Code_Array := Compress ("Test", Freeze, 8);
+         pragma Unreferenced (Res);
       begin
          Assert (False, "Failed: Should have rejected Max_Bits < 9");
       end;
